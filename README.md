@@ -150,6 +150,10 @@ berth deploy production --tag 1a2b3c4d
 - **Odebrání prostředí** se vším, co na serveru má, na přání i s daty.
   Úklid dat po odebraných službách a nepoužívaných image.
 - Služba s `autoUpdate` se sama aktualizuje z registru a UI to označí.
+- **Hlídání nových verzí image**: jednou denně Berth zjistí, jestli
+  k image služeb, databází a základům buildů (`FROM`, `COPY --from`
+  v Containerfile) vyšla novější verze, a pošle souhrnný e-mail. Velké
+  verze označí zvlášť, povýšení zůstává ruční.
 
 ### 📈 Monitoring a alerty
 
