@@ -16,6 +16,7 @@ na serverech, které máte pod kontrolou.
 ![Podman](https://img.shields.io/badge/Podman-Quadlety-892ca0)
 ![Caddy](https://img.shields.io/badge/HTTPS-Caddy-1f88c0)
 
+[Web](https://linuxak.com/berth) ·
 [Rychlý start](#-rychlý-start) ·
 [Co Berth umí](#-co-berth-umí) ·
 [CLI](#-cli) ·
@@ -93,7 +94,7 @@ berth deploy production --tag 1a2b3c4d
 |---|---|
 | 🔄 **Nasazení bez výpadku** | blue/green s kontrolou zdraví, automatický rollback, každý release jde vrátit jedním kliknutím |
 | 🔐 **Tajné údaje v gitu** | šifrované `sops` a `age`, klíč na prostředí, šifruje centrála |
-| 🐘 **Databáze** | Postgres v manifestu, zálohy na S3, obnova z dumpu, Adminer v prohlížeči |
+| 🐘 **Databáze** | Postgres, MariaDB nebo MySQL v manifestu, zálohy na S3, obnova z dumpu, Adminer v prohlížeči |
 | 🖥️ **Provoz z prohlížeče** | log, terminál do kontejneru, správce souborů, ovládání služeb |
 | 📈 **Monitoring a alerty** | grafy serverů a služeb, logy, alerty e-mailem a do Telegramu |
 | 🌐 **Víc serverů** | připojení přes SSH jedním formulářem, WireGuard a mTLS |
@@ -133,14 +134,19 @@ berth deploy production --tag 1a2b3c4d
 
 ### 🐘 Databáze bez starostí
 
-- **Postgres jako součást aplikace**, stačí ho popsat v manifestu.
+- **Postgres, MariaDB nebo MySQL jako součást aplikace**, stačí databázi
+  popsat v manifestu (`type: postgres`, `mariadb` nebo `mysql`). MariaDB
+  a MySQL potřebují navíc heslo roota (`rootPassword`), Berth jím zakládá
+  uživatele jen pro čtení. Typ databáze pod daty změnit nejde, nasazení
+  takovou změnu odmítne.
 - **Zálohy na S3** podle cronu s retencí, volitelně i před nasazením,
   které databázi mění. Běží i bez centrály.
-- **Obnova** ze zálohy nebo nahraného dumpu v jedné transakci, takže
-  vadný dump databázi nepoškodí. Velké dumpy se nahrávají po částech
-  s navázáním po výpadku spojení.
+- **Obnova** ze zálohy nebo nahraného dumpu. Postgres obnovuje v jedné
+  transakci, takže vadný dump databázi nepoškodí. MariaDB a MySQL to
+  neumí, Berth proto před obnovou sám udělá zálohu. Velké dumpy se
+  nahrávají po částech s navázáním po výpadku spojení.
 - **Vyprázdnění dat** jedním kliknutím: služba se spustí načisto,
-  Postgres s novým `initdb`.
+  databáze s prázdným svazkem.
 - **Adminer v prohlížeči** s rovnou přihlášenou databází a
   `berth db tunnel` pro připojení z vlastního počítače.
 
@@ -298,7 +304,7 @@ na [GitHub Releases](https://github.com/linuxak-dev/berth/releases).
                     ▼                     ▼                     ▼
                agent uzlu            agent uzlu            agent uzlu
            Quadlety · Caddy      Quadlety · Caddy      Quadlety · Caddy
-           Postgres · zálohy     Postgres · zálohy     Postgres · zálohy
+           databáze · zálohy     databáze · zálohy     databáze · zálohy
 ```
 
 - **Centrála** drží projekty, prostředí, tajné údaje a historii nasazení,
