@@ -1,6 +1,11 @@
 <div align="center">
 
-# ⚓ Berth
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="app/spa/public/favicon.png">
+  <img src="app/spa/public/icons/favicon-source.png" alt="Logo Berthu" width="120">
+</picture>
+
+# Berth
 
 **Vlastní PaaS pro vaše servery.**
 Nasazení bez výpadku, databáze se zálohami, monitoring a registr image
