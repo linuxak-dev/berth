@@ -17,6 +17,7 @@ na serverech, které máte pod kontrolou.
 ![Caddy](https://img.shields.io/badge/HTTPS-Caddy-1f88c0)
 
 [Web](https://linuxak.com/berth) ·
+[Dokumentace](https://linuxak.com/berth/docs) ·
 [Rychlý start](#-rychlý-start) ·
 [Co Berth umí](#-co-berth-umí) ·
 [CLI](#-cli) ·
@@ -113,8 +114,10 @@ berth deploy production --tag 1a2b3c4d
   sebe nesnese, má `strategy: recreate`.
 - **Automatický rollback.** Když nová verze po přepnutí spadne, Berth sám
   vrátí předchozí. Ručně jedním kliknutím nebo `berth rollback`.
-- **Z CI jedním krokem.** Sdílený workflow pro Gitea Actions postaví image,
-  pošle je do registru a nasadí, průběh je živě vidět v terminálu i v UI.
+- **Z jakéhokoli CI.** V GitHub Actions, GitLab CI i jinde stačí stáhnout
+  CLI z centrály a pustit `berth build` a `berth deploy` s nasazovacím
+  tokenem. Pro Gitea Actions je připravený sdílený workflow. Průběh je
+  živě vidět v terminálu i v UI.
 - **HTTPS a DNS samo.** Let's Encrypt nebo Cloudflare DNS (i pro servery
   na soukromé adrese), záznamy A u Cloudflare se založí při nasazení.
   Routy umí přesměrování, kanonickou doménu, cesty, omezení na adresy,
