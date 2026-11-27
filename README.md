@@ -2,39 +2,39 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="app/spa/public/favicon.png">
-  <img src="app/spa/public/icons/favicon-source.png" alt="Logo Berthu" width="120">
+  <img src="app/spa/public/icons/favicon-source.png" alt="Logo PodBerthu" width="120">
 </picture>
 
-# Berth
+# PodBerth
 
 **Vlastní PaaS pro vaše servery.**
 Nasazení bez výpadku, databáze se zálohami, monitoring a registr image
 na serverech, které máte pod kontrolou.
 
-[![Vydání](https://img.shields.io/github/v/release/linuxak-dev/berth?label=vyd%C3%A1n%C3%AD&color=2563eb)](https://github.com/linuxak-dev/berth/releases/latest)
+[![Vydání](https://img.shields.io/github/v/release/linuxak-dev/podberth?label=vyd%C3%A1n%C3%AD&color=2563eb)](https://github.com/linuxak-dev/podberth/releases/latest)
 ![Platforma](https://img.shields.io/badge/Rocky%20%7C%20RHEL-10-10b981)
 ![Podman](https://img.shields.io/badge/Podman-Quadlety-892ca0)
 ![Caddy](https://img.shields.io/badge/HTTPS-Caddy-1f88c0)
 
-[Web](https://linuxak.com/berth) ·
-[Dokumentace](https://linuxak.com/berth/docs) ·
+[Web](https://linuxak.com/podberth) ·
+[Dokumentace](https://linuxak.com/podberth/docs) ·
 [Rychlý start](#-rychlý-start) ·
-[Co Berth umí](#-co-berth-umí) ·
+[Co PodBerth umí](#-co-podberth-umí) ·
 [CLI](#-cli) ·
 [Instalace](#-instalace-centrály) ·
-[Vydání](https://github.com/linuxak-dev/berth/releases)
+[Vydání](https://github.com/linuxak-dev/podberth/releases)
 
 </div>
 
 ---
 
-Berth dává vlastním serverům pohodlí platforem typu Heroku nebo Render,
+PodBerth dává vlastním serverům pohodlí platforem typu Heroku nebo Render,
 ale data, servery i náklady zůstávají u vás. Projekt popíše své služby
 v jednom souboru `deploy/deploy.yaml`, CI nebo CLI ho pošle centrále
 a agent na serveru nasadí služby jako Quadlety Podmanu za Caddy.
 
 > [!TIP]
-> Aplikace na Berthu nezávisí. Služby běží jako systémové jednotky
+> Aplikace na PodBerthu nezávisí. Služby běží jako systémové jednotky
 > Podmanu, takže když centrála zrovna neběží, aplikace, zálohy i HTTPS
 > jedou dál.
 
@@ -43,7 +43,7 @@ a agent na serveru nasadí služby jako Quadlety Podmanu za Caddy.
 **1. Centrála** na čistém serveru s Rocky nebo RHEL 10 (jako root):
 
 ```bash
-curl -fsSL https://get.linuxak.com/berth | sh
+curl -fsSL https://get.linuxak.com/podberth | sh
 ```
 
 **2. Manifest** v repozitáři aplikace, `deploy/deploy.yaml`:
@@ -85,11 +85,11 @@ environments:
 **3. Nasazení** z počítače nebo z CI:
 
 ```bash
-berth login https://berth.example.com
-berth deploy production --tag 1a2b3c4d
+podberth login https://podberth.example.com
+podberth deploy production --tag 1a2b3c4d
 ```
 
-## ✨ Co Berth umí
+## ✨ Co PodBerth umí
 
 | | |
 |---|---|
@@ -107,15 +107,15 @@ berth deploy production --tag 1a2b3c4d
 
 - **Celá aplikace v jednom souboru.** `deploy/deploy.yaml` popisuje
   služby, databáze, domény, routy, zálohy a rozdíly mezi prostředími.
-  Berth ho před nasazením přísně zkontroluje a chybu ohlásí dřív, než se
+  PodBerth ho před nasazením přísně zkontroluje a chybu ohlásí dřív, než se
   cokoli dotkne serveru.
 - **Blue/green.** Nová verze naběhne vedle staré, projde kontrolou zdraví
   a teprve pak na ni Caddy přepne provoz. Služba, která dvě kopie vedle
   sebe nesnese, má `strategy: recreate`.
-- **Automatický rollback.** Když nová verze po přepnutí spadne, Berth sám
-  vrátí předchozí. Ručně jedním kliknutím nebo `berth rollback`.
+- **Automatický rollback.** Když nová verze po přepnutí spadne, PodBerth sám
+  vrátí předchozí. Ručně jedním kliknutím nebo `podberth rollback`.
 - **Z jakéhokoli CI.** V GitHub Actions, GitLab CI i jinde stačí stáhnout
-  CLI z centrály a pustit `berth build` a `berth deploy` s nasazovacím
+  CLI z centrály a pustit `podberth build` a `podberth deploy` s nasazovacím
   tokenem. Pro Gitea Actions je připravený sdílený workflow. Průběh je
   živě vidět v terminálu i v UI.
 - **HTTPS a DNS samo.** Let's Encrypt nebo Cloudflare DNS (i pro servery
@@ -130,28 +130,28 @@ berth deploy production --tag 1a2b3c4d
 
 - Hesla a klíče leží v gitu šifrované ve formátu `sops` s klíči `age`,
   každé prostředí má vlastní klíč a záchranného příjemce.
-- `berth secret set` šifruje přes centrálu, nikdo nepotřebuje `sops` ani
+- `podberth secret set` šifruje přes centrálu, nikdo nepotřebuje `sops` ani
   klíč u sebe. Změna jedné hodnoty mění v gitu jen jeden řádek.
 - Tajné hodnoty se nikdy nezapisují do logu, událostí ani do popisu
-  releasu. Výměna klíče je jeden příkaz `berth secret rekey`.
+  releasu. Výměna klíče je jeden příkaz `podberth secret rekey`.
 
 ### 🐘 Databáze bez starostí
 
 - **Postgres, MariaDB nebo MySQL jako součást aplikace**, stačí databázi
   popsat v manifestu (`type: postgres`, `mariadb` nebo `mysql`). MariaDB
-  a MySQL potřebují navíc heslo roota (`rootPassword`), Berth jím zakládá
+  a MySQL potřebují navíc heslo roota (`rootPassword`), PodBerth jím zakládá
   uživatele jen pro čtení. Typ databáze pod daty změnit nejde, nasazení
   takovou změnu odmítne.
 - **Zálohy na S3** podle cronu s retencí, volitelně i před nasazením,
   které databázi mění. Běží i bez centrály.
 - **Obnova** ze zálohy nebo nahraného dumpu. Postgres obnovuje v jedné
   transakci, takže vadný dump databázi nepoškodí. MariaDB a MySQL to
-  neumí, Berth proto před obnovou sám udělá zálohu. Velké dumpy se
+  neumí, PodBerth proto před obnovou sám udělá zálohu. Velké dumpy se
   nahrávají po částech s navázáním po výpadku spojení.
 - **Vyprázdnění dat** jedním kliknutím: služba se spustí načisto,
   databáze s prázdným svazkem.
 - **Adminer v prohlížeči** s rovnou přihlášenou databází a
-  `berth db tunnel` pro připojení z vlastního počítače.
+  `podberth db tunnel` pro připojení z vlastního počítače.
 
 ### 🖥️ Provoz aplikací z prohlížeče
 
@@ -164,7 +164,7 @@ berth deploy production --tag 1a2b3c4d
 - **Odebrání prostředí** se vším, co na serveru má, na přání i s daty.
   Úklid dat po odebraných službách a nepoužívaných image.
 - Služba s `autoUpdate` se sama aktualizuje z registru a UI to označí.
-- **Hlídání nových verzí image**: jednou denně Berth zjistí, jestli
+- **Hlídání nových verzí image**: jednou denně PodBerth zjistí, jestli
   k image služeb, databází a základům buildů (`FROM`, `COPY --from`
   v Containerfile) vyšla novější verze, a pošle souhrnný e-mail. Velké
   verze označí zvlášť, povýšení zůstává ruční.
@@ -179,11 +179,11 @@ berth deploy production --tag 1a2b3c4d
   Telegramu, ztlumení na dobu údržby a hlídač samotného monitoringu.
 - **Nástěnka „Vyžaduje pozornost“**: nedostupný server, neběžící služba,
   selhané nasazení nebo záloha, docházející disk, kritické CVE, nová
-  verze Berthu.
+  verze PodBerthu.
 
 ### 🌐 Víc serverů, jedna centrála
 
-- Vzdálený server se připojí formulářem v UI. Berth na něj přes SSH
+- Vzdálený server se připojí formulářem v UI. PodBerth na něj přes SSH
   nainstaluje agenta, Podman i Caddy a spojí ho s centrálou přes
   WireGuard a mTLS.
 - Přehled serverů s využitím zdrojů, aktualizace agentů a Caddy, rotace
@@ -210,12 +210,12 @@ berth deploy production --tag 1a2b3c4d
 ### ♻️ Centrála, která se stará sama o sebe
 
 - **Instalace jedním příkazem**, s doménou i bez ní.
-- **Aktualizace bez výpadku** z UI nebo `berth server update`, se zálohou
-  předem a návratem přes `berth server repair`.
+- **Aktualizace bez výpadku** z UI nebo `podberth server update`, se zálohou
+  předem a návratem přes `podberth server repair`.
 - **Noční šifrovaná záloha** na S3 a obnova na novém serveru příkazem
-  `berth server restore`. Servery se k obnovené centrále připojí samy.
+  `podberth server restore`. Servery se k obnovené centrále připojí samy.
 - Doména, certifikát, pošta, registr, monitoring i firewall se nastaví
-  v UI nebo jedním příkazem `berth server …`.
+  v UI nebo jedním příkazem `podberth server …`.
 - Příručka přímo v aplikaci, otazník u každé stránky vede na její oddíl.
 
 ## ⌨️ CLI
@@ -224,14 +224,14 @@ berth deploy production --tag 1a2b3c4d
 <summary><b>Každodenní práce</b></summary>
 
 ```bash
-berth login https://berth.example.com   # přihlášení přes prohlížeč
-berth init                              # připraví repo (.sops.yaml, .gitignore)
-berth validate                          # kontrola manifestu bez serveru
-berth deploy staging --tag 1a2b3c4d     # nasazení s živým průběhem
-berth status staging                    # stav služeb
-berth logs staging web                  # log služby
-berth rollback staging                  # návrat k předchozí verzi
-berth service restart staging web       # restart služby
+podberth login https://podberth.example.com   # přihlášení přes prohlížeč
+podberth init                              # připraví repo (.sops.yaml, .gitignore)
+podberth validate                          # kontrola manifestu bez serveru
+podberth deploy staging --tag 1a2b3c4d     # nasazení s živým průběhem
+podberth status staging                    # stav služeb
+podberth logs staging web                  # log služby
+podberth rollback staging                  # návrat k předchozí verzi
+podberth service restart staging web       # restart služby
 ```
 
 </details>
@@ -240,13 +240,13 @@ berth service restart staging web       # restart služby
 <summary><b>Tajné údaje, databáze a soubory</b></summary>
 
 ```bash
-berth secret set staging env.API_KEY             # tajný údaj bez sops
-berth secret rekey staging                       # výměna klíče prostředí
-berth db tunnel staging main                     # databáze na localhostu
-berth db import staging main dump.sql --confirm main   # obnova z dumpu
-berth files put staging ./uploads web:data/ -r   # soubory do volume
-berth files put staging data.tar web:data --extract --preserve   # archiv s právy a vlastníky
-berth files get staging web:data/export backup.tar               # stažení z volume
+podberth secret set staging env.API_KEY             # tajný údaj bez sops
+podberth secret rekey staging                       # výměna klíče prostředí
+podberth db tunnel staging main                     # databáze na localhostu
+podberth db import staging main dump.sql --confirm main   # obnova z dumpu
+podberth files put staging ./uploads web:data/ -r   # soubory do volume
+podberth files put staging data.tar web:data --extract --preserve   # archiv s právy a vlastníky
+podberth files get staging web:data/export backup.tar               # stažení z volume
 ```
 
 </details>
@@ -255,12 +255,12 @@ berth files get staging web:data/export backup.tar               # stažení z v
 <summary><b>Monitoring a správa centrály</b></summary>
 
 ```bash
-berth monitoring alerts                          # aktivní alerty
-berth monitoring silence --alert DiskSkoroPlny --for 2h --node web1
-berth server update --version 0.7.4              # aktualizace centrály
-berth server firewall --open 20202/tcp           # jeden veřejný port
-berth server domain --domain berth.example.com --cert letsencrypt
-berth server backup                              # záloha centrály teď
+podberth monitoring alerts                          # aktivní alerty
+podberth monitoring silence --alert DiskSkoroPlny --for 2h --node web1
+podberth server update --version 0.7.4              # aktualizace centrály
+podberth server firewall --open 20202/tcp           # jeden veřejný port
+podberth server domain --domain podberth.example.com --cert letsencrypt
+podberth server backup                              # záloha centrály teď
 ```
 
 </details>
@@ -270,14 +270,14 @@ berth server backup                              # záloha centrály teď
 Na čistém serveru s **Rocky Linux** nebo **RHEL 10** jako root:
 
 ```bash
-curl -fsSL https://get.linuxak.com/berth | sh
+curl -fsSL https://get.linuxak.com/podberth | sh
 ```
 
 Instalace se zeptá na adresu serveru (jen když jich najde víc) a na účet
-administrátora. UI pak běží na `https://<adresa>/berth` s interním
+administrátora. UI pak běží na `https://<adresa>/podberth` s interním
 certifikátem. Doménu a důvěryhodný certifikát (Let's Encrypt, nebo
 Cloudflare DNS pro server na soukromé adrese) nastavíte v UI na stránce
-Centrála nebo příkazem `berth server domain`.
+Centrála nebo příkazem `podberth server domain`.
 
 <details>
 <summary><b>Bezobslužná instalace</b></summary>
@@ -285,23 +285,23 @@ Centrála nebo příkazem `berth server domain`.
 Volby jdou za `sh -s --`:
 
 ```bash
-curl -fsSL https://get.linuxak.com/berth | sh -s -- \
-  --domain berth.example.com \
+curl -fsSL https://get.linuxak.com/podberth | sh -s -- \
+  --domain podberth.example.com \
   --cert cloudflare --cloudflare-token-file /root/cf.token \
   --admin-email admin@example.com --admin-password-file /root/admin.pw
 ```
 
-Všechny volby vypíše `berth server install --help`.
+Všechny volby vypíše `podberth server install --help`.
 
 </details>
 
 Binárky CLI pro **Linux**, **macOS** a **Windows** jsou u každého vydání
-na [GitHub Releases](https://github.com/linuxak-dev/berth/releases).
+na [GitHub Releases](https://github.com/linuxak-dev/podberth/releases).
 
 ## 🧱 Jak to funguje
 
 ```text
-  git push ──► CI ──► berth deploy ──► centrála (API + UI)
+  git push ──► CI ──► podberth deploy ──► centrála (API + UI)
                                           │  mTLS přes WireGuard
                     ┌─────────────────────┼─────────────────────┐
                     ▼                     ▼                     ▼
@@ -319,11 +319,11 @@ na [GitHub Releases](https://github.com/linuxak-dev/berth/releases).
 ---
 
 <details>
-<summary><b>Pro vývojáře Berthu</b></summary>
+<summary><b>Pro vývojáře PodBerthu</b></summary>
 
 | Část | Co to je |
 |---|---|
-| `app/api` | API centrály (jádro Plinth), CLI `berth`, agent `berth-agent` |
+| `app/api` | API centrály (jádro Plinth), CLI `podberth`, agent `podberth-agent` |
 | `app/spa` | webové rozhraní centrály |
 | `caddy` | build Caddy s modulem Cloudflare (vlastní vydání `caddy-<verze>`) |
 | `examples/hello` | testovací aplikace |
@@ -332,7 +332,7 @@ na [GitHub Releases](https://github.com/linuxak-dev/berth/releases).
 ```bash
 make stack-up          # lokální Gitea a zot
 make test              # testy a kontroly
-make build-cli         # bin/berth
+make build-cli         # bin/podberth
 make build-linux       # CLI a agent pro linux/arm64
 ```
 
